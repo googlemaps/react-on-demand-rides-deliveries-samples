@@ -5,14 +5,17 @@
     "allowJs": true,
     "esModuleInterop": true,
     "jsx": "react-native",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["DOM", "ES6"],
     "moduleResolution": "node",
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "target": "ESNext",
+    "target": "ES6",
     "importHelpers": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
+  },
+  "watchOptions": {
+    "excludeFiles": ["src/main.test.tsx"]
   }
 }
