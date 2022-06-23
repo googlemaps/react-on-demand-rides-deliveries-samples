@@ -16,6 +16,6 @@
     "noImplicitAny": false,
   },
   "watchOptions": {
-    "excludeFiles": ["src/main.test.tsx"]
+    "excludeFiles": ["src/*.{test.tsx}"]
   }
 }
