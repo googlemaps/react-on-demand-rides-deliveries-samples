@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import MapComponent from './components/MapComponent';
 
@@ -25,11 +25,21 @@ const App = () => {
 
   return (
     <View>
+      <Text style={styles.header}>React Native for Web On-Demand Rides and Deliveries Sample App</Text>
       <Wrapper apiKey={'YOUR_API_KEY'} render={render} version={'beta'} libraries={['journeySharing']}>
         <MapComponent />
       </Wrapper>
     </View>
   )
 };
+
+const styles = StyleSheet.create({
+  header: {
+    fontSize: '2em',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20
+  },
+});
 
 export default App;

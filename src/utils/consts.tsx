@@ -15,8 +15,8 @@
  */
 
 export const DEFAULT_POLLING_INTERVAL_MS = 3000;
-export const PROVIDER_PROJECT_ID = 'YOUR_PROJECT_ID';
 export const PROVIDER_URL = 'YOUR_PROVIDER_URL';
+export const PROVIDER_PROJECT_ID = 'YOUR_PROJECT_ID';
 
 export const ICON_OPTIONS = {
   USE_DEFAULT: { displayName: 'Use default', icon: null },

@@ -72,35 +72,29 @@ const MapComponent = () => {
       ...mapOptions,
     });
 
-    journeySharingMap.map.setCenter({ lat: 37.7749, lng: -122.4503 });
-    journeySharingMap.map.setZoom(12);
+    journeySharingMap.map.setOptions({ center: { lat: 37.424069, lng: -122.0916944 }, zoom: 14 });
     setError(undefined);
   }, [tripId, mapOptions]);
 
   return (
     <View>
-      <Text style={styles.header}>React Native for Web On-Demand Rides and Deliveries Sample App</Text>
-      <View>
-        <View style={styles.stack}>
-          <Text style={styles.heading}>Options</Text>
-          <OptionsComponent setMapOptions={setMapOptions} />
-          <TripIdComponent setTripId={setTripId} />
-          <Text style={styles.heading}>Trip information</Text>
-          <TripInformation style={styles.infoBlock} error={error} trip={trip} tripId={tripId} />
-        </View>
-        <View style={styles.map} ref={ref} />
+      <View style={styles.stack}>
+        <OptionsComponent setMapOptions={setMapOptions} />
+        <TripIdComponent setTripId={setTripId} />
+        <Text style={styles.heading}>Trip information</Text>
+        <TripInformation style={styles.infoBlock} error={error} trip={trip} tripId={tripId} />
       </View>
+      <View style={styles.map} ref={ref} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   map: {
-    height: '90vh',
-    width: '70%',
+    height: '87vh',
+    width: '75%',
     position: 'absolute',
-    right: 80,
-    flexGrow: 1,
+    right: 50,
   },
   infoBlock: {
     marginLeft: '30px',
@@ -112,7 +106,7 @@ const styles = StyleSheet.create({
     fontSize: '2em',
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 20,
+    marginVertical: 20
   },
   heading: {
     fontSize: '1.6rem',
@@ -121,11 +115,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   stack: {
-    marginLeft: 30,
+    marginLeft: 10,
     position: 'absolute',
     width: '25%',
     padding: 15,
   },
 });
 
-export default MapComponent;
+export default React.memo(MapComponent);

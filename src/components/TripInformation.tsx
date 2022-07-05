@@ -24,7 +24,7 @@ const TripInformation = ({ error, tripId, trip }) => {
 
   const stops = trip.stops;
 
-  const dropOff = `${trip.dropOff?.toDateString() || ''}, ${trip.dropOff?.toLocaleTimeString() || ''}`;
+  const dropOff = `${trip?.dropOff?.toDateString() || ''}, ${trip?.dropOff?.toLocaleTimeString() || ''}`;
 
   let destinationDistance = `${trip.wayPoints?.reduce(
     (sum, waypoint) => sum + (waypoint.distanceMeters || 0),
@@ -46,8 +46,8 @@ const TripInformation = ({ error, tripId, trip }) => {
   if (tripId && (status === 'Complete')) {
     return (
       <View style={style.view}>
-        <Text style={style.text}>Trip status: {status}</Text>
-        <Text style={style.text}>Arrived: {dropOff}</Text>
+        <Text style={style.text}>TRIP STATUS: {status}</Text>
+        <Text style={style.text}>ARRIVED: {dropOff}</Text>
       </View>
     );
   }
@@ -55,11 +55,11 @@ const TripInformation = ({ error, tripId, trip }) => {
   if (tripId && status) {
     return (
       <View style={style.view}>
-        <Text style={style.text}>Trip status: {status}</Text>
-        <Text style={style.text}>Estimated Arrival Time: {dropOff}</Text>
-        <Text style={style.text}># of remaining stops: {stops}</Text>
-        <Text style={style.text}>Distance to destination: {destinationDistance}</Text>
-        <Text style={style.text}>Distance to to next stop: {nextStopDistance}</Text>
+        <Text style={style.text}>TRIP STATUS: {status}</Text>
+        <Text style={style.text}>ETA: {dropOff}</Text>
+        <Text style={style.text}># STOPS REMAINING: {stops}</Text>
+        <Text style={style.text}>DISTANCE TO DESTINATION: {destinationDistance}</Text>
+        <Text style={style.text}>DISTANCE TO NEXT STOP: {nextStopDistance}</Text>
       </View>
     );
   } else {
@@ -79,7 +79,7 @@ const style = StyleSheet.create({
   },
   text: {
     marginBottom: 15,
-    fontSize: '0.7rem',
+    fontSize: '0.8rem',
   },
 });
 

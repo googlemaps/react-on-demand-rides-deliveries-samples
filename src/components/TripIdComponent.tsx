@@ -41,14 +41,14 @@ const styles = StyleSheet.create({
     width: '75%',
     borderWidth: 1,
     paddingLeft: 10,
-    fontSize: '1rem',
+    fontSize: '0.8rem',
     margin: 'auto',
   },
   button: {
     marginLeft: 25,
     backgroundColor: '#2460ad',
     padding: 5,
-    width: '20%',
+    width: 70,
     borderRadius: 2,
   },
   text: {
