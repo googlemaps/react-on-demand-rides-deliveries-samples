@@ -18,6 +18,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import MapComponent from './components/MapComponent';
+import { API_KEY } from './utils/consts';
 
 const render = (status: Status) => <Text>{status}</Text>;
 
@@ -26,7 +27,7 @@ const App = () => {
   return (
     <View>
       <Text style={styles.header}>React Native for Web On-Demand Rides and Deliveries Sample App</Text>
-      <Wrapper apiKey={'YOUR_API_KEY'} render={render} version={'beta'} libraries={['journeySharing']}>
+      <Wrapper apiKey={API_KEY} render={render} version={'beta'} libraries={['journeySharing']}>
         <MapComponent />
       </Wrapper>
     </View>

@@ -15,10 +15,9 @@ The consumer and driver mobile apps communicate with the provider backend. The w
 
 ## Prerequisites
 
-1. Please fully complete [Getting Started with Fleet Engine](https://developers.google.com/maps/documentation/transportation-logistics/on-demand-rides-deliveries-solution/trip-order-progress/fleet-engine).
-2. Please make sure the [provider backend](https://github.com/googlemaps/java-on-demand-rides-deliveries-stub-provider)
-   is up and running.
-3. Please make sure a consumer mobile app and a driver mobile app are running. Use these to create vehicles and trips to track with the React NAtive Web sample app.
+1. Complete [Getting Started with Fleet Engine](https://developers.google.com/maps/documentation/transportation-logistics/on-demand-rides-deliveries-solution/trip-order-progress/fleet-engine).
+2. Run [provider backend](https://github.com/googlemaps/java-on-demand-rides-deliveries-stub-provider).
+3. Run both consumer mobile app and the driver mobile app. Use these to create vehicles and trips to track with the React Native Web sample app.
 
 ## Getting started
 
@@ -29,7 +28,9 @@ These dependencies are needed to run the sample app. If you have them installed 
 - Download & install node from https://nodejs.org/en/download/
 - Download & install expo CLI:
 
-    npm install --global expo-cli
+```
+npm install --global expo-cli
+```
 
 ### Step 2 - Populate `./node_modules`
 
@@ -45,6 +46,7 @@ In `/src/utils/consts.tsx`, do the following:
 
 - Set the `PROVIDER_URL` constant to the URL of your provider that was set up in Prerequisite #2.
 - Set the `PROVIDER_PROJECT_ID` constant to your Cloud project ID 
+- Set the `API_KEY` constant to your Google Maps API key
 
 ```typescript
 // Replace 'YOUR_PROVIDER_URL' with the URL of your provider. See
@@ -52,14 +54,7 @@ In `/src/utils/consts.tsx`, do the following:
 // for instructions on how to set up a provider.
 export const PROVIDER_URL = 'YOUR_PROVIDER_URL';
 export const PROVIDER_PROJECT_ID = 'YOUR_PROJECT_ID';
-```
-
-- In `src/App.tsx`, add your API key to the Google Maps JavaScript API React Wrapper:
-
-```typescript
-    <Wrapper apiKey={'YOUR_API_KEY'} ...>
-        <MapComponent />
-    </Wrapper>
+export const API_KEY = 'YOUR_API_KEY';
 ```
 
 ### Step 4 - Run the sample app

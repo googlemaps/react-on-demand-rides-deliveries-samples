@@ -19,11 +19,13 @@ import { StyleSheet, View, Text } from 'react-native';
 import TripInformation from './TripInformation';
 import OptionsComponent from './UI/OptionsComponent';
 import TripIdComponent from './TripIdComponent';
-import { DEFAULT_POLLING_INTERVAL_MS, PROVIDER_PROJECT_ID, PROVIDER_URL } from '../utils/consts';
+import { DEFAULT_POLLING_INTERVAL_MS, PROVIDER_PROJECT_ID, PROVIDER_URL, DEFAULT_MAP_OPTIONS } from '../utils/consts';
 
 const MapComponent = () => {
-  const ref = useRef(null);
-  const [tripId, setTripId] = useState('');
+  const ref = useRef();
+  const tripId = useRef('');
+  const journeySharingMap = useRef();
+  const [mapOptions, setMapOptions] = useState({});
   const [trip, setTrip] = useState({
     status: '',
     stops: 0,
@@ -31,27 +33,32 @@ const MapComponent = () => {
     wayPoints: [],
   });
   const [error, setError] = useState();
-  const [mapOptions, setMapOptions] = useState({});
+
+  const authTokenFetcher = async () => {
+    const response = await fetch(
+      `${PROVIDER_URL}/token/consumer/${tripId.current}`
+    );
+    const responseJson = await response.json();
+    return {
+      token: responseJson.jwt,
+      expiresInSeconds: 3300,
+    };
+  };
+
+  const locationProvider = new google.maps.journeySharing.FleetEngineTripLocationProvider({
+    projectId: PROVIDER_PROJECT_ID,
+    authTokenFetcher,
+    tripId: tripId.current,
+    pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+  });
+
+  const setTripId = (newTripId) => {
+    tripId.current = newTripId;
+    journeySharingMap.current.locationProvider.tripId = newTripId;
+    setError(undefined);
+  }
 
   useEffect(() => {
-    const authTokenFetcher = async () => {
-      const response = await fetch(
-        `${PROVIDER_URL}/token/consumer/${tripId}`
-      );
-      const responseJson = await response.json();
-      return {
-        token: responseJson.jwt,
-        expiresInSeconds: 3300,
-      };
-    };
-
-    const locationProvider = new google.maps.journeySharing.FleetEngineTripLocationProvider({
-      projectId: PROVIDER_PROJECT_ID,
-      authTokenFetcher,
-      tripId,
-      pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
-    });
-
     locationProvider.addListener('error', e => {
       setError(e.error.message);
     });
@@ -66,15 +73,14 @@ const MapComponent = () => {
       }));
     });
 
-    const journeySharingMap = new google.maps.journeySharing.JourneySharingMapView({
+    journeySharingMap.current = new google.maps.journeySharing.JourneySharingMapView({
       element: ref.current,
       locationProvider,
-      ...mapOptions,
+      ...mapOptions
     });
 
-    journeySharingMap.map.setOptions({ center: { lat: 37.424069, lng: -122.0916944 }, zoom: 14 });
-    setError(undefined);
-  }, [tripId, mapOptions]);
+    journeySharingMap.current.map.setOptions(DEFAULT_MAP_OPTIONS);
+  }, [mapOptions]);
 
   return (
     <View>
