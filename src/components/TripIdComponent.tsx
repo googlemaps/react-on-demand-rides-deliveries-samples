@@ -20,10 +20,13 @@ import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 const TripIdComponent = ({ setTripId }) => {
   const [text, setText] = useState();
   const onPress = () => setTripId(text);
+  const onKeyPress = (e) => {
+    if (e.nativeEvent.key === 'Enter') onPress();
+  };
 
   return (
     <View>
-      <TextInput style={styles.input} placeholder={'Trip ID'} onChangeText={(text) => setText(text)} />
+      <TextInput style={styles.input} placeholder={'Trip ID'} onChangeText={(text) => setText(text)} onKeyPress={onKeyPress}/>
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.text}>Find</Text>
       </Pressable>

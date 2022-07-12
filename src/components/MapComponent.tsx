@@ -24,6 +24,7 @@ import { DEFAULT_POLLING_INTERVAL_MS, PROVIDER_PROJECT_ID, PROVIDER_URL, DEFAULT
 const MapComponent = () => {
   const ref = useRef();
   const tripId = useRef('');
+  const locationProvider = useRef();
   const journeySharingMap = useRef();
   const [mapOptions, setMapOptions] = useState({});
   const [trip, setTrip] = useState({
@@ -33,6 +34,11 @@ const MapComponent = () => {
     wayPoints: [],
   });
   const [error, setError] = useState();
+
+  const setTripId = (newTripId) => {
+    tripId.current = newTripId;
+    journeySharingMap.current.locationProvider.tripId = newTripId;
+  };
 
   const authTokenFetcher = async () => {
     const response = await fetch(
@@ -45,25 +51,21 @@ const MapComponent = () => {
     };
   };
 
-  const locationProvider = new google.maps.journeySharing.FleetEngineTripLocationProvider({
-    projectId: PROVIDER_PROJECT_ID,
-    authTokenFetcher,
-    tripId: tripId.current,
-    pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
-  });
-
-  const setTripId = (newTripId) => {
-    tripId.current = newTripId;
-    journeySharingMap.current.locationProvider.tripId = newTripId;
-    setError(undefined);
-  }
+  useEffect(() => {
+    locationProvider.current = new google.maps.journeySharing.FleetEngineTripLocationProvider({
+      projectId: PROVIDER_PROJECT_ID,
+      authTokenFetcher,
+      tripId: tripId.current,
+      pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+    });
+  }, []);
 
   useEffect(() => {
-    locationProvider.addListener('error', e => {
+    locationProvider.current?.addListener('error', e => {
       setError(e.error.message);
     });
 
-    locationProvider.addListener('update', e => {
+    locationProvider.current?.addListener('update', e => {
       setTrip((prev) => ({
         ...prev,
         stops: e.trip.remainingWaypoints?.length,
@@ -71,11 +73,12 @@ const MapComponent = () => {
         dropOff: e.trip.dropOffTime,
         wayPoints: e.trip.remainingWaypoints,
       }));
+      setError(undefined);
     });
 
     journeySharingMap.current = new google.maps.journeySharing.JourneySharingMapView({
       element: ref.current,
-      locationProvider,
+      locationProvider: locationProvider.current,
       ...mapOptions
     });
 
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: '2em',
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 20
+    marginVertical: 20,
   },
   heading: {
     fontSize: '1.6rem',
@@ -128,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(MapComponent);
+export default MapComponent;
