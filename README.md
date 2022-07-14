@@ -37,7 +37,7 @@ npm install --global expo-cli
 This will install all packages declared in `package.json` of the sample project to make sure all dependencies are properly installed.
 
 ```
-npm install --save --legacy-peer-deps
+npm install --legacy-peer-deps
 ```
 
 ### Step 3 - Add API key and other metadata (required)
