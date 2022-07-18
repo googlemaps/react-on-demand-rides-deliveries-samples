@@ -25,8 +25,10 @@ const render = (status: Status) => <Text>{status}</Text>;
 const App = () => {
 
   return (
-    <View>
-      <Text style={styles.header}>React Native for Web On-Demand Rides and Deliveries Sample App</Text>
+    <View style={styles.appcontent}>
+      <Text style={styles.header}>
+        React Native for Web On-Demand Rides and Deliveries Sample App
+      </Text>
       <Wrapper apiKey={API_KEY} render={render} version={'beta'} libraries={['journeySharing']}>
         <MapComponent />
       </Wrapper>
@@ -35,12 +37,21 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: '2em',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20
+  appcontent: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    height: '100%',
+    flexWrap: 'wrap',
   },
+  header: {
+    fontSize: '1.75em',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginVertical: 10,
+    marginHorizontal: 10,
+    flexWrap: 'wrap',
+  }
 });
 
 export default App;

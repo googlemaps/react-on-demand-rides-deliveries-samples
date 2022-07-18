@@ -45,7 +45,7 @@ npm install --legacy-peer-deps
 In `/src/utils/consts.tsx`, do the following:
 
 - Set the `PROVIDER_URL` constant to the URL of your provider that was set up in Prerequisite #2.
-- Set the `PROVIDER_PROJECT_ID` constant to your Cloud project ID 
+- Set the `PROVIDER_PROJECT_ID` constant to your Cloud project ID
 - Set the `API_KEY` constant to your Google Maps API key
 
 ```typescript
@@ -65,7 +65,7 @@ From this directory, run `npm start web` to start a development server. The app 
 
 Enter a trip ID for a trip you created (Prerequisite #3) in the Trip ID input field and click "Find".
 
-![On-Demand Rides and Deliveries tracking](images/ride-tracking.png)
+![On-Demand Rides and Deliveries tracking](images/trip_tracking_image.png)
 
 ## Important references
 

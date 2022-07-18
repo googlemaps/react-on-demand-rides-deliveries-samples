@@ -19,25 +19,42 @@ import { StyleSheet, View, Text } from 'react-native';
 import TripInformation from './TripInformation';
 import OptionsComponent from './UI/OptionsComponent';
 import TripIdComponent from './TripIdComponent';
-import { DEFAULT_POLLING_INTERVAL_MS, PROVIDER_PROJECT_ID, PROVIDER_URL, DEFAULT_MAP_OPTIONS } from '../utils/consts';
+import {
+  DEFAULT_POLLING_INTERVAL_MS, PROVIDER_PROJECT_ID, PROVIDER_URL,
+  DEFAULT_MAP_OPTIONS
+} from '../utils/consts';
+
+interface TripModel {
+  status?: string;
+  numStops?: number;
+  dropOff?: Date;
+  waypoints?: google.maps.journeySharing.VehicleWaypoint[];
+};
+
+interface MapOptionsModel {
+  showAnticipatedRoutePolyline: boolean,
+  showTakenRoutePolyline: boolean,
+};
 
 const MapComponent = () => {
   const ref = useRef();
-  const tripId = useRef('');
-  const locationProvider = useRef();
-  const journeySharingMap = useRef();
-  const [mapOptions, setMapOptions] = useState({});
-  const [trip, setTrip] = useState({
-    status: '',
-    stops: 0,
-    dropOff: new Date(),
-    wayPoints: [],
+  const tripId = useRef<string>();
+  const locationProvider = useRef<google.maps.journeySharing.FleetEngineTripLocationProvider>();
+  const [error, setError] = useState<string | undefined>();
+  const [mapOptions, setMapOptions] = useState<MapOptionsModel>({
+    showAnticipatedRoutePolyline: true,
+    showTakenRoutePolyline: true
   });
-  const [error, setError] = useState();
+  const [trip, setTrip] = useState<TripModel>({
+    status: '',
+    numStops: 0,
+    dropOff: new Date(),
+    waypoints: [],
+  });
 
-  const setTripId = (newTripId) => {
+  const setTripId = (newTripId: string) => {
     tripId.current = newTripId;
-    journeySharingMap.current.locationProvider.tripId = newTripId;
+    if (locationProvider.current) locationProvider.current.tripId = newTripId;
   };
 
   const authTokenFetcher = async () => {
@@ -45,6 +62,7 @@ const MapComponent = () => {
       `${PROVIDER_URL}/token/consumer/${tripId.current}`
     );
     const responseJson = await response.json();
+
     return {
       token: responseJson.jwt,
       expiresInSeconds: 3300,
@@ -58,58 +76,82 @@ const MapComponent = () => {
       tripId: tripId.current,
       pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
     });
-  }, []);
 
-  useEffect(() => {
-    locationProvider.current?.addListener('error', e => {
+    locationProvider.current.addListener('error', (e: google.maps.ErrorEvent) => {
       setError(e.error.message);
     });
 
-    locationProvider.current?.addListener('update', e => {
-      setTrip((prev) => ({
-        ...prev,
-        stops: e.trip.remainingWaypoints?.length,
-        status: e.trip.status,
-        dropOff: e.trip.dropOffTime,
-        wayPoints: e.trip.remainingWaypoints,
-      }));
-      setError(undefined);
+    locationProvider.current.addListener('update', (e: google.maps.journeySharing.FleetEngineTripLocationProviderUpdateEvent) => {
+      if (e.trip) {
+        setTrip({
+          status: e.trip.status,
+          numStops: e.trip?.remainingWaypoints?.length,
+          dropOff: e.trip?.dropOffTime,
+          waypoints: e.trip?.remainingWaypoints,
+        });
+        setError(undefined);
+      };
     });
+  }, []);
 
-    journeySharingMap.current = new google.maps.journeySharing.JourneySharingMapView({
+  useEffect(() => {
+    if (locationProvider.current) locationProvider.current.reset();
+
+    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
       element: ref.current,
       locationProvider: locationProvider.current,
-      ...mapOptions
-    });
+      anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+        return {
+          polylineOptions: defaultPolylineOptions,
+          visible: mapOptions.showAnticipatedRoutePolyline,
+        };
+      },
+      takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+        return {
+          polylineOptions: defaultPolylineOptions,
+          visible: mapOptions.showTakenRoutePolyline,
+        };
+      }
+    };
 
-    journeySharingMap.current.map.setOptions(DEFAULT_MAP_OPTIONS);
+    const mapView = new google.maps.journeySharing.JourneySharingMapView(
+      mapViewOptions
+    );
+
+    // Provide default zoom & center so the map loads even if trip ID is bad or stale.
+    mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
   }, [mapOptions]);
 
   return (
     <View>
-      <View style={styles.stack}>
-        <OptionsComponent setMapOptions={setMapOptions} />
-        <TripIdComponent setTripId={setTripId} />
-        <Text style={styles.heading}>Trip information</Text>
-        <TripInformation style={styles.infoBlock} error={error} trip={trip} tripId={tripId} />
+      <TripIdComponent setTripId={setTripId} />
+      <View style={styles.container}>
+        <View style={styles.stack}>
+          <OptionsComponent setMapOptions={setMapOptions} />
+          <Text style={styles.heading}>Trip information</Text>
+          <TripInformation error={error} trip={trip} tripId={tripId} />
+        </View>
+        <View style={styles.mapContainer}>
+          <View style={styles.map} ref={ref} />
+        </View>
       </View>
-      <View style={styles.map} ref={ref} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  map: {
-    height: '87vh',
-    width: '75%',
-    position: 'absolute',
-    right: 50,
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 10,
   },
-  infoBlock: {
-    marginLeft: '30px',
-    position: 'absolute',
-    width: '25%',
-    padding: '10px',
+  map: {
+    height: '75vh',
+  },
+  mapContainer: {
+    display: 'flex',
+    width: '60%',
+    marginRight: 15,
   },
   header: {
     fontSize: '2em',
@@ -118,17 +160,18 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   heading: {
-    fontSize: '1.6rem',
+    fontSize: '1rem',
     fontWeight: 'bold',
-    marginVertical: 30,
-    marginLeft: 20,
+    marginTop: 30,
+    marginBottom: 10,
   },
   stack: {
-    marginLeft: 10,
-    position: 'absolute',
-    width: '25%',
-    padding: 15,
-  },
+    display: 'flex',
+    marginLeft: 15,
+    width: '30%',
+    flex: 1,
+    flexDirection: 'column',
+  }
 });
 
 export default MapComponent;
