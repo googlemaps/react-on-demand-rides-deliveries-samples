@@ -16,24 +16,27 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { TripModel } from './MapComponent';
 
-const TripInformation = ({ error, tripId, trip }) => {
+interface Props {
+  error: string | undefined,
+  tripId: string,
+  trip: TripModel,
+};
 
-  let status = trip.status?.toLowerCase().replace(/_/g, ' ');
-  status = status ? `${status.charAt(0).toUpperCase()}${status.slice(1)}` : undefined;
+const TripInformation: React.FC<Props> = ({ error, tripId, trip }) => {
+  const dropOff = trip.dropOff?.toLocaleString();
+  const numStops = trip.waypoints ? trip.waypoints.length : 0;
 
-  const numStops = trip.numStops;
+  let distanceSum = trip.waypoints?.reduce((sum, waypoint) => {
+    return sum + (waypoint.distanceMeters || 0)
+  }, 0);
 
-  const dropOff = `${trip?.dropOff?.toDateString() || ''}, ${trip?.dropOff?.toLocaleTimeString() || ''}`;
+  const destinationDistance = distanceSum ? `${distanceSum.toLocaleString()} meters` : ' ';
 
-  let destinationDistance = `${trip.waypoints?.reduce(
-    (sum, waypoint) => sum + (waypoint.distanceMeters || 0),
-    0
-  ).toLocaleString()}`;
-  destinationDistance = `${destinationDistance || ''} ${destinationDistance !== undefined ? 'meters' : ''}`;
-
-  let nextStopDistance = trip.waypoints && trip.waypoints[0];
-  nextStopDistance = `${nextStopDistance?.distanceMeters.toLocaleString() || ''} ${nextStopDistance?.distanceMeters.toLocaleString() !== undefined ? 'meters' : ''}`;
+  let waypoints = trip.waypoints && trip.waypoints[0];
+  const nextStopDistance = waypoints?.distanceMeters ? `${waypoints.distanceMeters
+    .toLocaleString()} meters` : ' ';
 
   if (error) {
     return (
@@ -43,22 +46,22 @@ const TripInformation = ({ error, tripId, trip }) => {
     );
   }
 
-  if (tripId && (status === 'Complete')) {
+  if (tripId && (trip.status === 'COMPLETE')) {
     return (
       <View style={styles.view}>
         <Text style={styles.label}>TRIP STATUS</Text>
-        <Text style={styles.text}>{status}</Text>
+        <Text style={styles.text}>{trip.status}</Text>
         <Text style={styles.label}>ARRIVED</Text>
         <Text style={styles.text}>{dropOff}</Text>
       </View>
     );
   }
 
-  if (tripId && status) {
+  if (tripId && trip.status) {
     return (
       <View style={styles.view}>
         <Text style={styles.label}>TRIP STATUS</Text>
-        <Text style={styles.text}>{status}</Text>
+        <Text style={styles.text}>{trip.status}</Text>
         <Text style={styles.label}>ETA</Text>
         <Text style={styles.text}>{dropOff}</Text>
         <Text style={styles.label}># STOPS REMAINING</Text>
@@ -72,7 +75,9 @@ const TripInformation = ({ error, tripId, trip }) => {
   } else {
     return (
       <View style={styles.view}>
-        <Text style={{ ...styles.text, fontStyle: 'italic' }}>Enter a trip ID to see trip information.</Text>
+        <Text style={{ ...styles.text, fontStyle: 'italic' }}>
+          Enter a trip ID to see trip information.
+        </Text>
       </View>
     );
   }
@@ -83,11 +88,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   label: {
-    fontSize: '0.725rem',
+    fontSize: 10,
   },
   text: {
     marginVertical: 10,
-    fontSize: '1rem',
+    fontSize: 16,
   }
 });
 

@@ -24,11 +24,10 @@ import {
   DEFAULT_MAP_OPTIONS
 } from '../utils/consts';
 
-interface TripModel {
-  status?: string;
-  numStops?: number;
-  dropOff?: Date;
-  waypoints?: google.maps.journeySharing.VehicleWaypoint[];
+export interface TripModel {
+  status: string | null;
+  dropOff: Date | null;
+  waypoints: google.maps.journeySharing.VehicleWaypoint[] | null;
 };
 
 interface MapOptionsModel {
@@ -37,8 +36,8 @@ interface MapOptionsModel {
 };
 
 const MapComponent = () => {
-  const ref = useRef();
-  const tripId = useRef<string>();
+  const ref = useRef(null);
+  const tripId = useRef<string>('');
   const locationProvider = useRef<google.maps.journeySharing.FleetEngineTripLocationProvider>();
   const [error, setError] = useState<string | undefined>();
   const [mapOptions, setMapOptions] = useState<MapOptionsModel>({
@@ -46,10 +45,9 @@ const MapComponent = () => {
     showTakenRoutePolyline: true
   });
   const [trip, setTrip] = useState<TripModel>({
-    status: '',
-    numStops: 0,
-    dropOff: new Date(),
-    waypoints: [],
+    status: null,
+    dropOff: null,
+    waypoints: null,
   });
 
   const setTripId = (newTripId: string) => {
@@ -85,9 +83,8 @@ const MapComponent = () => {
       if (e.trip) {
         setTrip({
           status: e.trip.status,
-          numStops: e.trip?.remainingWaypoints?.length,
-          dropOff: e.trip?.dropOffTime,
-          waypoints: e.trip?.remainingWaypoints,
+          dropOff: e.trip.dropOffTime,
+          waypoints: e.trip.remainingWaypoints,
         });
         setError(undefined);
       };
@@ -95,31 +92,32 @@ const MapComponent = () => {
   }, []);
 
   useEffect(() => {
-    if (locationProvider.current) locationProvider.current.reset();
+    if (locationProvider.current) {
+      locationProvider.current.reset()
+      const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
+        element: ref.current,
+        locationProvider: locationProvider.current,
+        anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.showAnticipatedRoutePolyline,
+          };
+        },
+        takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.showTakenRoutePolyline,
+          };
+        }
+      };
 
-    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
-      element: ref.current,
-      locationProvider: locationProvider.current,
-      anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.showAnticipatedRoutePolyline,
-        };
-      },
-      takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.showTakenRoutePolyline,
-        };
-      }
-    };
+      const mapView = new google.maps.journeySharing.JourneySharingMapView(
+        mapViewOptions
+      );
 
-    const mapView = new google.maps.journeySharing.JourneySharingMapView(
-      mapViewOptions
-    );
-
-    // Provide default zoom & center so the map loads even if trip ID is bad or stale.
-    mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
+      // Provide default zoom & center so the map loads even if trip ID is bad or stale.
+      mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
+    }
   }, [mapOptions]);
 
   return (
@@ -129,7 +127,7 @@ const MapComponent = () => {
         <View style={styles.stack}>
           <OptionsComponent setMapOptions={setMapOptions} />
           <Text style={styles.heading}>Trip information</Text>
-          <TripInformation error={error} trip={trip} tripId={tripId} />
+          <TripInformation error={error} trip={trip} tripId={tripId.current} />
         </View>
         <View style={styles.mapContainer}>
           <View style={styles.map} ref={ref} />
@@ -153,14 +151,8 @@ const styles = StyleSheet.create({
     width: '60%',
     marginRight: 15,
   },
-  header: {
-    fontSize: '2em',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
   heading: {
-    fontSize: '1rem',
+    fontSize: 16,
     fontWeight: 'bold',
     marginTop: 30,
     marginBottom: 10,
