@@ -15,7 +15,43 @@
  */
 
 import React from 'react';
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import MapComponent from '../components/MapComponent';
+import TripIdComponent from '../components/TripIdComponent';
+import OptionsComponent from '../components/UI/OptionsComponent';
+
+beforeAll(() => {
+  Enzyme.configure({ adapter: new Adapter() });
+});
 
 describe('MapComponent', () => {
-  it("handles invalid auth", async () => {});
+  it('matches previous snapshot', async () => {
+    const wrapper = shallow(<MapComponent />);
+    expect(wrapper.debug()).toMatchSnapshot();
+  });
+
+  it('renders the app correctly', () => {
+    const wrapper = shallow(<MapComponent />);
+    expect(wrapper.debug()).toBeTruthy();
+  });
+
+  it('calls setTripID on "Find" press', () => {
+    const setTripId = jest.fn();
+    const wrapper = shallow(<TripIdComponent setTripId={setTripId} />);
+    wrapper.find('TextInput').simulate('changeText', 'Hello');
+    wrapper.update();
+    wrapper.find('Pressable').simulate('press');
+
+    expect(setTripId).toHaveBeenCalled();
+    expect(setTripId).toHaveBeenCalledWith('Hello');
+  });
+
+  it('renders apply button disabled', () => {
+    const setMapOptions = jest.fn();
+    const wrapper = shallow(<OptionsComponent setMapOptions={setMapOptions} />);
+    const apply = wrapper.find('Pressable').at(2);
+
+    expect(apply.props().disabled).toBeTruthy();
+  });
 });

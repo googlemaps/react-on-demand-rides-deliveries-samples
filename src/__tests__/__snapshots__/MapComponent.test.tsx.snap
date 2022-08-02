@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MapComponent matches previous snapshot 1`] = `
+"<View>
+  <TripIdComponent setTripId={[Function: setTripId]} />
+  <View style={111}>
+    <View style={115}>
+      <OptionsComponent setMapOptions={[Function: setMapOptions]} />
+      <Text style={114}>
+        Trip information
+      </Text>
+      <TripInformation error={[undefined]} trip={{...}} tripId=\\"\\" />
+    </View>
+    <View style={113}>
+      <View style={112} />
+    </View>
+  </View>
+</View>"
+`;

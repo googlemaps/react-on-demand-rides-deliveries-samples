@@ -1,62 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`App matches previous snapshot 1`] = `
-<div
-  className="css-view-1dbjc4n"
->
-  <div
-    className="css-view-1dbjc4n"
-  >
-    <div
-      className="css-text-901oao"
-      dir="auto"
-    >
-      LOADING
-    </div>
-  </div>
-  <div
-    className="css-view-1dbjc4n r-marginTop-1p6u9xm r-padding-1g4nhe4 r-position-u8s1d r-width-1xce0ei"
-  >
-    <div
-      className="css-view-1dbjc4n"
-    >
-      <input
-        autoCapitalize="sentences"
-        autoComplete="on"
-        autoCorrect="on"
-        className="css-textinput-11aywtz r-borderWidth-rs99b7 r-flex-13awgt0 r-fontSize-1enofrn r-margin-ywje51 r-marginBottom-ku1wi2 r-marginLeft-1cjg8pu r-marginTop-6ity3w r-padding-1ffoksr r-paddingLeft-1hfyk0a r-width-xaq1zp"
-        dir="auto"
-        onBlur={[Function]}
-        onChange={[Function]}
-        onFocus={[Function]}
-        onKeyDown={[Function]}
-        onSelect={[Function]}
-        placeholder="Trip ID"
-        readOnly={false}
-        spellCheck={true}
-        type="text"
-      />
-      <div
-        className="css-view-1dbjc4n r-backgroundColor-1hqxkqz r-borderColor-1atlagf r-borderRadius-1jkafct r-borderWidth-rs99b7 r-cursor-1loqt21 r-marginLeft-1cjg8pu r-padding-tuq35u r-touchAction-1otgn73 r-transitionProperty-1i6wzkk r-userSelect-lrvibr r-width-1j6l8hp"
-        onClick={[Function]}
-        onContextMenu={[Function]}
-        onKeyDown={[Function]}
-        style={
-          Object {
-            "WebkitTransitionDuration": "0s",
-            "transitionDuration": "0s",
-          }
-        }
-        tabIndex="0"
-      >
-        <div
-          className="css-text-901oao r-color-jwli3a r-fontSize-1enofrn r-textAlign-q4m81j"
-          dir="auto"
-        >
-          Find
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+"<View>
+  <Text style={116}>
+    React Native for Web On-Demand Rides and Deliveries Sample App
+  </Text>
+  <Wrapper apiKey=\\"YOUR_API_KEY\\" render={[Function: render]} version=\\"beta\\" libraries={{...}}>
+    <MapComponent />
+  </Wrapper>
+</View>"
 `;

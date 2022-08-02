@@ -15,18 +15,22 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react-native';
-
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import App from '../../App';
 
+beforeAll(() => {
+  Enzyme.configure({ adapter: new Adapter() });
+});
+
 describe('App', () => {
-  it('matches previous snapshot', () => {
-    const tree = render(<App />);
-    expect(tree).toMatchSnapshot();
+  it('matches previous snapshot', async () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.debug()).toMatchSnapshot();
   });
 
-  it('renders the app corectly', () => {
-    const { container } = render(<App />);
-    expect(container).toBeTruthy();
+  it('renders correctly', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.debug()).toBeTruthy();
   });
 });
