@@ -20,29 +20,32 @@ import TripInformation from './TripInformation';
 import OptionsComponent from './UI/OptionsComponent';
 import TripIdComponent from './TripIdComponent';
 import {
-  DEFAULT_POLLING_INTERVAL_MS, PROVIDER_PROJECT_ID, PROVIDER_URL,
-  DEFAULT_MAP_OPTIONS
+  DEFAULT_POLLING_INTERVAL_MS,
+  PROVIDER_PROJECT_ID,
+  PROVIDER_URL,
+  DEFAULT_MAP_OPTIONS,
 } from '../utils/consts';
 
 export interface TripModel {
   status: string | null;
   dropOff: Date | null;
   waypoints: google.maps.journeySharing.VehicleWaypoint[] | null;
-};
+}
 
 interface MapOptionsModel {
-  showAnticipatedRoutePolyline: boolean,
-  showTakenRoutePolyline: boolean,
-};
+  showAnticipatedRoutePolyline: boolean;
+  showTakenRoutePolyline: boolean;
+}
 
 const MapComponent = () => {
   const ref = useRef(null);
   const tripId = useRef<string>('');
-  const locationProvider = useRef<google.maps.journeySharing.FleetEngineTripLocationProvider>();
+  const locationProvider =
+    useRef<google.maps.journeySharing.FleetEngineTripLocationProvider>();
   const [error, setError] = useState<string | undefined>();
   const mapOptions = useRef<MapOptionsModel>({
     showAnticipatedRoutePolyline: true,
-    showTakenRoutePolyline: true
+    showTakenRoutePolyline: true,
   });
   const [trip, setTrip] = useState<TripModel>({
     status: null,
@@ -56,8 +59,10 @@ const MapComponent = () => {
   };
 
   const setMapOptions = (newMapOptions: MapOptionsModel) => {
-    mapOptions.current.showAnticipatedRoutePolyline = newMapOptions.showAnticipatedRoutePolyline;
-    mapOptions.current.showTakenRoutePolyline = newMapOptions.showTakenRoutePolyline;
+    mapOptions.current.showAnticipatedRoutePolyline =
+      newMapOptions.showAnticipatedRoutePolyline;
+    mapOptions.current.showTakenRoutePolyline =
+      newMapOptions.showTakenRoutePolyline;
     setTripId(tripId.current);
   };
 
@@ -74,44 +79,54 @@ const MapComponent = () => {
   };
 
   useEffect(() => {
-    locationProvider.current = new google.maps.journeySharing.FleetEngineTripLocationProvider({
-      projectId: PROVIDER_PROJECT_ID,
-      authTokenFetcher,
-      tripId: tripId.current,
-      pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
-    });
+    locationProvider.current =
+      new google.maps.journeySharing.FleetEngineTripLocationProvider({
+        projectId: PROVIDER_PROJECT_ID,
+        authTokenFetcher,
+        tripId: tripId.current,
+        pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+      });
 
-    locationProvider.current.addListener('error', (e: google.maps.ErrorEvent) => {
-      setError(e.error.message);
-    });
-
-    locationProvider.current.addListener('update', (e: google.maps.journeySharing.FleetEngineTripLocationProviderUpdateEvent) => {
-      if (e.trip) {
-        setTrip({
-          status: e.trip.status,
-          dropOff: e.trip.dropOffTime,
-          waypoints: e.trip.remainingWaypoints,
-        });
-        setError(undefined);
-      };
-    });
-
-    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
-      element: ((ref.current as unknown) as Element),
-      locationProvider: locationProvider.current,
-      anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.current.showAnticipatedRoutePolyline,
-        };
-      },
-      takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.current.showTakenRoutePolyline,
-        };
+    locationProvider.current.addListener(
+      'error',
+      (e: google.maps.ErrorEvent) => {
+        setError(e.error.message);
       }
-    };
+    );
+
+    locationProvider.current.addListener(
+      'update',
+      (
+        e: google.maps.journeySharing.FleetEngineTripLocationProviderUpdateEvent
+      ) => {
+        if (e.trip) {
+          setTrip({
+            status: e.trip.status,
+            dropOff: e.trip.dropOffTime,
+            waypoints: e.trip.remainingWaypoints,
+          });
+          setError(undefined);
+        }
+      }
+    );
+
+    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions =
+      {
+        element: ref.current as unknown as Element,
+        locationProvider: locationProvider.current,
+        anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.current.showAnticipatedRoutePolyline,
+          };
+        },
+        takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.current.showTakenRoutePolyline,
+          };
+        },
+      };
 
     const mapView = new google.maps.journeySharing.JourneySharingMapView(
       mapViewOptions
@@ -164,7 +179,7 @@ const styles = StyleSheet.create({
     width: '30%',
     flex: 1,
     flexDirection: 'column',
-  }
+  },
 });
 
 export default MapComponent;

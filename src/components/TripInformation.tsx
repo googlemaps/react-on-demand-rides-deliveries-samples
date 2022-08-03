@@ -19,24 +19,27 @@ import { View, Text, StyleSheet } from 'react-native';
 import { TripModel } from './MapComponent';
 
 interface Props {
-  error: string | undefined,
-  tripId: string,
-  trip: TripModel,
-};
+  error: string | undefined;
+  tripId: string;
+  trip: TripModel;
+}
 
 const TripInformation: React.FC<Props> = ({ error, tripId, trip }) => {
   const dropOff = trip.dropOff?.toLocaleString();
   const numStops = trip.waypoints ? trip.waypoints.length : 0;
 
-  let distanceSum = trip.waypoints?.reduce((sum, waypoint) => {
-    return sum + (waypoint.distanceMeters || 0)
+  const distanceSum = trip.waypoints?.reduce((sum, waypoint) => {
+    return sum + (waypoint.distanceMeters || 0);
   }, 0);
 
-  const destinationDistance = distanceSum ? `${distanceSum.toLocaleString()} meters` : ' ';
+  const destinationDistance = distanceSum
+    ? `${distanceSum.toLocaleString()} meters`
+    : ' ';
 
-  let waypoints = trip.waypoints && trip.waypoints[0];
-  const nextStopDistance = waypoints?.distanceMeters ? `${waypoints.distanceMeters
-    .toLocaleString()} meters` : ' ';
+  const waypoints = trip.waypoints && trip.waypoints[0];
+  const nextStopDistance = waypoints?.distanceMeters
+    ? `${waypoints.distanceMeters.toLocaleString()} meters`
+    : ' ';
 
   if (error) {
     return (
@@ -46,7 +49,7 @@ const TripInformation: React.FC<Props> = ({ error, tripId, trip }) => {
     );
   }
 
-  if (tripId && (trip.status === 'COMPLETE')) {
+  if (tripId && trip.status === 'COMPLETE') {
     return (
       <View style={styles.view}>
         <Text style={styles.label}>TRIP STATUS</Text>
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
   text: {
     marginVertical: 10,
     fontSize: 16,
-  }
+  },
 });
 
 export default TripInformation;

@@ -27,10 +27,12 @@ const TripIdComponent = ({ setTripId }) => {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input}
+      <TextInput
+        style={styles.input}
         placeholder={'Trip ID'}
         onChangeText={(text) => setText(text)}
-        onKeyPress={onKeyPress} />
+        onKeyPress={onKeyPress}
+      />
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.text}>Find</Text>
       </Pressable>
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     textAlign: 'center',
-  }
+  },
 });
 
 export default TripIdComponent;
