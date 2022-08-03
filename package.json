@@ -23,7 +23,7 @@
   "devDependencies": {
     "@testing-library/react-native": "^10.1.1",
     "@types/google.maps": "^3.49.2",
-    "@types/jest": "^28.1.5",
+    "@types/jest": "^28.1.6",
     "@types/react": "^18.0.15",
     "@types/react-native": "^0.69.3",
     "jest": "^28.1.3",
