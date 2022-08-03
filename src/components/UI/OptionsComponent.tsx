@@ -42,7 +42,7 @@ const OptionsComponent = ({ setMapOptions }) => {
         padding: 5,
         width: 50,
         borderRadius: 2,
-      }
+      };
     }
 
     return {
