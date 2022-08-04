@@ -24,6 +24,7 @@ import {
   PROVIDER_PROJECT_ID,
   PROVIDER_URL,
   DEFAULT_MAP_OPTIONS,
+  ICON_OPTIONS,
 } from '../utils/consts';
 
 export interface TripModel {
@@ -32,9 +33,17 @@ export interface TripModel {
   waypoints: google.maps.journeySharing.VehicleWaypoint[] | null;
 }
 
-interface MapOptionsModel {
+export interface MapOptionsModel {
   showAnticipatedRoutePolyline: boolean;
   showTakenRoutePolyline: boolean;
+  destinationMarker: {
+    displayName: string;
+    icon: google.maps.Symbol | null;
+  };
+  vehicleMarker: {
+    displayName: string;
+    icon: google.maps.Symbol | null;
+  };
 }
 
 const MapComponent = () => {
@@ -46,6 +55,8 @@ const MapComponent = () => {
   const mapOptions = useRef<MapOptionsModel>({
     showAnticipatedRoutePolyline: true,
     showTakenRoutePolyline: true,
+    destinationMarker: ICON_OPTIONS.USE_DEFAULT,
+    vehicleMarker: ICON_OPTIONS.USE_DEFAULT,
   });
   const [trip, setTrip] = useState<TripModel>({
     status: null,
@@ -63,6 +74,8 @@ const MapComponent = () => {
       newMapOptions.showAnticipatedRoutePolyline;
     mapOptions.current.showTakenRoutePolyline =
       newMapOptions.showTakenRoutePolyline;
+    mapOptions.current.destinationMarker = newMapOptions.destinationMarker;
+    mapOptions.current.vehicleMarker = newMapOptions.vehicleMarker;
     setTripId(tripId.current);
   };
 
@@ -125,6 +138,27 @@ const MapComponent = () => {
             polylineOptions: defaultPolylineOptions,
             visible: mapOptions.current.showTakenRoutePolyline,
           };
+        },
+        destinationMarkerSetup: ({ defaultMarkerOptions }) => {
+          if (
+            mapOptions.current.destinationMarker !== ICON_OPTIONS.USE_DEFAULT
+          ) {
+            defaultMarkerOptions.icon =
+              mapOptions.current.destinationMarker.icon;
+          }
+          return { markerOptions: defaultMarkerOptions };
+        },
+        vehicleMarkerSetup: ({ defaultMarkerOptions }) => {
+          if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
+            // Preserve some default icon properties.
+            if (defaultMarkerOptions.icon) {
+              defaultMarkerOptions.icon = Object.assign(
+                defaultMarkerOptions.icon,
+                mapOptions.current.vehicleMarker.icon
+              );
+            }
+          }
+          return { markerOptions: defaultMarkerOptions };
         },
       };
 
