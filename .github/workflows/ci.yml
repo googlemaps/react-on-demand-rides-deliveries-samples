@@ -27,5 +27,7 @@ jobs:
             ${{ runner.os }}-node-
       - run: npm i --legacy-peer-deps
       - run: npm run lint
-      - run: npm test
+      - run: npm test -- --forceExit --detectOpenHandles
+        env:
+          CI: true
       - uses: codecov/codecov-action@v1

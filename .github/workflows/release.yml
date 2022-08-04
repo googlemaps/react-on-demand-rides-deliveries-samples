@@ -39,7 +39,7 @@ jobs:
         run: |
           npm i --legacy-peer-deps
           npm run lint
-          npm test
+          npm test -- --forceExit --detectOpenHandles
       - name: Release
         uses: cycjimmy/semantic-release-action@v2
         with:
