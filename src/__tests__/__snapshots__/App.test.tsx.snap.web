@@ -2,7 +2,7 @@
 
 exports[`App matches previous snapshot 1`] = `
 "<View>
-  <Text style={116}>
+  <Text style={117}>
     React Native for Web On-Demand Rides and Deliveries Sample App
   </Text>
   <Wrapper apiKey=\\"YOUR_API_KEY\\" render={[Function: render]} version=\\"beta\\" libraries={{...}}>
