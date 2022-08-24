@@ -1,0 +1,2 @@
+extends: "@googlemaps/semantic-release-config"
+
