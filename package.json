@@ -18,7 +18,7 @@
     "expo": "^45.0.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-native": "^0.69.3",
+    "react-native": "^0.69.5",
     "react-native-web": "0.17.7"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "@types/google.maps": "^3.49.2",
     "@types/jest": "^28.1.6",
     "@types/react": "^18.0.15",
-    "@types/react-native": "^0.69.3",
+    "@types/react-native": "^0.69.5",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "enzyme": "^3.11.0",
