@@ -83,11 +83,14 @@ const MapComponent = () => {
     const response = await fetch(
       `${PROVIDER_URL}/token/consumer/${tripId.current}`
     );
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
     const responseJson = await response.json();
 
     return {
       token: responseJson.jwt,
-      expiresInSeconds: 3300,
+      expiresInSeconds: responseJson.expirationTimestamp - Date.now(),
     };
   };
 
@@ -98,6 +101,26 @@ const MapComponent = () => {
         authTokenFetcher,
         tripId: tripId.current,
         pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+        destinationMarkerCustomization: (
+          params: google.maps.journeySharing.TripMarkerCustomizationFunctionParams
+        ) => {
+          if (
+            mapOptions.current.destinationMarker !== ICON_OPTIONS.USE_DEFAULT
+          ) {
+            params.marker.setIcon(mapOptions.current.destinationMarker.icon);
+          }
+        },
+
+        vehicleMarkerCustomization: (
+          params: google.maps.journeySharing.TripMarkerCustomizationFunctionParams
+        ) => {
+          if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
+            // Preserve some default icon properties.
+            if (params.marker.getIcon()) {
+              params.marker.setIcon(mapOptions.current.vehicleMarker.icon);
+            }
+          }
+        },
       });
 
     locationProvider.current.addListener(
@@ -139,29 +162,7 @@ const MapComponent = () => {
             visible: mapOptions.current.showTakenRoutePolyline,
           };
         },
-        destinationMarkerSetup: ({ defaultMarkerOptions }) => {
-          if (
-            mapOptions.current.destinationMarker !== ICON_OPTIONS.USE_DEFAULT
-          ) {
-            defaultMarkerOptions.icon =
-              mapOptions.current.destinationMarker.icon;
-          }
-          return { markerOptions: defaultMarkerOptions };
-        },
-        vehicleMarkerSetup: ({ defaultMarkerOptions }) => {
-          if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
-            // Preserve some default icon properties.
-            if (defaultMarkerOptions.icon) {
-              defaultMarkerOptions.icon = Object.assign(
-                defaultMarkerOptions.icon,
-                mapOptions.current.vehicleMarker.icon
-              );
-            }
-          }
-          return { markerOptions: defaultMarkerOptions };
-        },
       };
-
     const mapView = new google.maps.journeySharing.JourneySharingMapView(
       mapViewOptions
     );
