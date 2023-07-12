@@ -115,10 +115,7 @@ const MapComponent = () => {
           params: google.maps.journeySharing.TripMarkerCustomizationFunctionParams
         ) => {
           if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
-            // Preserve some default icon properties.
-            if (params.marker.getIcon()) {
-              params.marker.setIcon(mapOptions.current.vehicleMarker.icon);
-            }
+            params.marker.setIcon(mapOptions.current.vehicleMarker.icon);
           }
         },
       });
