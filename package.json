@@ -28,7 +28,7 @@
     "@types/jest": "^28.1.6",
     "@types/react": "^18.0.15",
     "@types/react-native": "^0.69.3",
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^5.32.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
